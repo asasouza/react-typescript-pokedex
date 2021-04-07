@@ -14,7 +14,7 @@ const PokemonCard = (props: IPokemonCard) => {
         return types.map(type => {
             return (
                 <span 
-                    className={`${pokemon.tagClassByType} mb-2 mr-2 px-2 py-1 rounded-3xl shadow text-sm`}
+                    className={`${pokemon.tagClassByType} bg-opacity-40 mb-2 mr-2 px-2 py-1 rounded-3xl shadow text-sm`}
                     key={type}
                 >
                     {type}
