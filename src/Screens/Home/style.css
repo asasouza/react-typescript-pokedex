@@ -1,0 +1,44 @@
+.spinner-enter {
+    animation: none;
+}
+
+.spinner-enter-active {
+    animation: none;
+    margin-bottom: -256px;
+    transform: translate(150px, -200px);
+    transition: transform 300ms;
+}
+
+.spinner-enter-done {
+    animation: none;
+    margin-bottom: -256px;
+    transform: translate(150px, -200px);
+}
+
+.pokemon-card-enter-active {
+    background-color: yellow !important;
+    opacity: 0;
+    transition: opacity 500ms;
+}
+
+.pokemon-card-enter-done {
+    background-color: violet !important;
+    opacity: 1;
+}
+
+.animate-fade-in {
+	opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: .3s;
+}
+
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}

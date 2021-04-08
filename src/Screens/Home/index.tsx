@@ -8,6 +8,8 @@ import Spinner from '../../common/Components/Spinner';
 import RepositoryPokemon from '../../repositories/PokemonRepository';
 // Hooks
 import useIntersectionObserver from '../../common/Hooks/useIntersectionObserver';
+// Resources
+import './style.css';
 
 const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
 
@@ -30,7 +32,7 @@ const Home = () => {
     }
 
     return (
-        <div className='bg-gray-100 container h-screen overflow-x-hidden overflow-y-auto p-4'>
+        <div className='bg-gray-100 h-screen max-w-md mx-auto overflow-x-hidden p-4 relative'>
 
             <header className='my-10' onClick={() => fetchNextPage()}>
                 <h1 className='font-bold text-3xl'>Pokedex</h1>
@@ -41,16 +43,20 @@ const Home = () => {
             }
 
             <Spinner
-                classAfterLoad='absolute top-0 right-0 opacity-20  z-0'
                 isLoading={isLoading}
+                transitionClassName='spinner'
             />
 
             { (!isLoading && !isError && data) &&
                 <div className='gap-3 grid grid-cols-2 z-10'>
                     {data.pages.map((page, i) =>
-                        <Fragment key={i}>
+                        <Fragment key={i} >
                             {page.pokemons.map(pokemon => {
-                                return <PokemonCard pokemon={pokemon} key={pokemon.name} />
+                                return (
+                                    <div key={pokemon.name} className='animate-fade-in'>
+                                        <PokemonCard pokemon={pokemon} />
+                                    </div>
+                                )
                             })}
                         </Fragment>
                     )}

@@ -24,7 +24,7 @@ const PokemonCard = (props: IPokemonCard) => {
     }
 
     return (
-        <div className={`${pokemon.backgroundClassByType} overflow-hidden p-3 relative  rounded-3xl shadow-md text-white`} key={pokemon.name}>
+        <div className={`${pokemon.backgroundClassByType} h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} key={pokemon.name}>
             <p className='font-semibold mb-3 text-xl'>{pokemon.name}</p>
             <div className='flex flex-row justify-between'>
                 <div className='flex items-start flex-col'>
