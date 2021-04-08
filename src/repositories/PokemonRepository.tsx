@@ -6,14 +6,14 @@ import Pokemon from '../models/Pokemon';
 import { upperCaseFirstLetter } from '../common/Utils/StringUtils';
 
 interface IPokemonRepository {
-    getPokemons({ limit, pageParam } : {limit?: number, pageParam?: number}): Promise<{ pokemons: Pokemon[], nextPage?: number}>; 
+    getPokemons({ limit, pageParam } : {limit?: number, pageParam?: number}): Promise<{ pokemons: Pokemon[], nextPage?: number }>; 
 }
 
 class PokemonRepository implements IPokemonRepository {
-    readonly POKEMON_FIRST_GENERATION = 152;
+    readonly POKEMON_FIRST_GENERATION = 153;
 
-    async getPokemons({ limit = 10, pageParam = 0 }): Promise<{pokemons: Pokemon[], nextPage?: number}> {
-        const POKEMON_FIRST_GENERATION = 152;
+    async getPokemons({ limit = 10, pageParam = 0 }): Promise<{ pokemons: Pokemon[], nextPage?: number }> {
+        const POKEMON_FIRST_GENERATION = 153;
         const pokemons: Pokemon[] = [];
         const offset = pageParam * limit;
         const limitFirstGeneration = (offset + limit) > POKEMON_FIRST_GENERATION ? POKEMON_FIRST_GENERATION : (offset + limit);
@@ -31,7 +31,7 @@ class PokemonRepository implements IPokemonRepository {
 
         const maxPages = Math.ceil(POKEMON_FIRST_GENERATION / limit);
 
-        return { pokemons, nextPage: pageParam <= maxPages ? pageParam + 1 : undefined};
+        return { pokemons, nextPage: pageParam <= maxPages ? pageParam + 1 : undefined };
     }
 }
 

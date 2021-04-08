@@ -22,12 +22,11 @@ const Home = () => {
 
     const { data, fetchNextPage, hasNextPage, isError, isFetchingNextPage, isLoading } = useInfiniteQuery('pokemons',
         PokemonRepository.getPokemons, {
-        getNextPageParam: (lastPage, pages) => lastPage.nextPage
+        getNextPageParam: lastPage => lastPage.nextPage
     });
 
-    if (entry?.isIntersecting && !isFetchingNextPage) {
+    if (entry?.isIntersecting && !isFetchingNextPage && hasNextPage) {
         fetchNextPage();
-
     }
 
     return (
