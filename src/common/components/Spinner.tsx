@@ -9,7 +9,7 @@ interface ISpinner {
 }
 
 const Spinner = (props: ISpinner) => {
-    const { classAfterLoad, isLoading } = props;
+    const { classAfterLoad = '', isLoading = true } = props;
 
     return (
         <img 

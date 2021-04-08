@@ -6,14 +6,18 @@ import Pokemon from '../models/Pokemon';
 import { upperCaseFirstLetter } from '../common/Utils/StringUtils';
 
 interface IPokemonRepository {
-    getPokemons(offset?: number, limit?: number): Promise<Pokemon[]>; 
+    getPokemons({ limit, pageParam } : {limit?: number, pageParam?: number}): Promise<{ pokemons: Pokemon[], nextPage?: number}>; 
 }
 
 class PokemonRepository implements IPokemonRepository {
-    
-    async getPokemons(): Promise<Pokemon[]> {
+    readonly POKEMON_FIRST_GENERATION = 152;
+
+    async getPokemons({ limit = 10, pageParam = 0 }): Promise<{pokemons: Pokemon[], nextPage?: number}> {
+        const POKEMON_FIRST_GENERATION = 152;
         const pokemons: Pokemon[] = [];
-        for (let i = 1; i < 10; i++) {
+        const offset = pageParam * limit;
+        const limitFirstGeneration = (offset + limit) > POKEMON_FIRST_GENERATION ? POKEMON_FIRST_GENERATION : (offset + limit);
+        for (let i = (offset + 1); i <= limitFirstGeneration; i++) {
             const { data, status } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`);
             if (status !== 200) {
                 throw new Error('Ocorreu um erro no fetch da api');
@@ -24,7 +28,10 @@ class PokemonRepository implements IPokemonRepository {
                 image: data.sprites.other['official-artwork'].front_default
             }));
         }
-        return pokemons;
+
+        const maxPages = Math.ceil(POKEMON_FIRST_GENERATION / limit);
+
+        return { pokemons, nextPage: pageParam <= maxPages ? pageParam + 1 : undefined};
     }
 }
 
