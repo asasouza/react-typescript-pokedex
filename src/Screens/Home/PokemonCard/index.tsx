@@ -1,3 +1,5 @@
+// Modules
+import { Link } from 'react-router-dom';
 // Models
 import Pokemon from '../../../models/Pokemon';
 // Resources
@@ -23,15 +25,16 @@ const PokemonCard = (props: IPokemonCard) => {
         })
     }
 
-    const openPokemonDetails = (): void => {
-        console.log('Pokemon clicked: ', pokemon.name);
-    }
-
     return (
-        <div 
-            className={`${pokemon.backgroundClassByType} cursor-pointer h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} 
+        <Link 
+            className={`${pokemon.backgroundClassByType} block h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} 
             key={pokemon.name}
-            onClick={openPokemonDetails}
+            to={{
+                pathname: `/${pokemon.name}`,
+                state: {
+                    pokemon: pokemon
+                }
+            }}
         >
             <p className='font-semibold mb-3 relative text-xl whitespace-nowrap z-20'>{pokemon.name}</p>
             <div className='flex flex-row justify-between'>
@@ -41,7 +44,7 @@ const PokemonCard = (props: IPokemonCard) => {
                 <img alt={pokemon.name} className='hover:scale-105 transform transition-all -mt-5 w-24 z-10' src={pokemon.image} />
             </div>
             <img alt='' className='absolute -bottom-10 opacity-50 -right-10 w-44 z-0' src={PokeballSvg} />
-        </div>
+        </Link>
     )
 }
 
