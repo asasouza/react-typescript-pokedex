@@ -21,37 +21,37 @@ export default class Pokemon implements IPokemon {
     get backgroundClassByType(): string {
         switch (this.type) {
             case 'Bug':
-                return 'bg-green-200';
+                return 'bg-green-200 hover:bg-green-300';
             case 'Dragon':
-                return 'bg-purple-400';
+                return 'bg-purple-400 hover:bg-purple-500';
             case 'Electric':
-                return 'bg-yellow-200';
+                return 'bg-yellow-200 hover:bg-yellow-300';
             case 'Fighting':
-                return 'bg-red-600';
+                return 'bg-red-600 hover:bg-red-700';
             case 'Fire':
-                return 'bg-red-400';
+                return 'bg-red-400 hover:bg-red-500';
             case 'Flying':
-                return 'bg-indigo-300';
+                return 'bg-indigo-300 hover:bg-indigo-400';
             case 'Ghost':
-                return 'bg-purple-700';
+                return 'bg-purple-700 hover:bg-purple-800';
             case 'Grass':
-                return 'bg-green-300';
+                return 'bg-green-300 hover:bg-green-400';
             case 'Ground':
-                return 'bg-yellow-500';
+                return 'bg-yellow-500 hover:bg-yellow-600';
             case 'Ice':
-                return 'bg-blue-100';
+                return 'bg-blue-100 hover:bg-blue-200';
             case 'Normal':
-                return 'bg-gray-400';
+                return 'bg-gray-400 hover:bg-gray-500';
             case 'Poison':
-                return 'bg-purple-500';
+                return 'bg-purple-500 hover:bg-purple-600';
             case 'Psychic':
-                return 'bg-pink-400';
+                return 'bg-pink-400 hover:bg-pink-500';
             case 'Rock':
-                return 'bg-yellow-700';
+                return 'bg-yellow-700 hover:bg-yellow-800';
             case 'Water':
-                return 'bg-blue-300';
+                return 'bg-blue-300 hover:bg-blue-400';
             default:
-                return 'bg-gray-700';
+                return 'bg-gray-700 hover:bg-gray-800';
         }
     }
 

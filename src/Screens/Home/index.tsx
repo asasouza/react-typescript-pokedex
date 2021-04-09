@@ -35,7 +35,7 @@ const Home = () => {
         <div className='bg-gray-100 h-screen max-w-md mx-auto overflow-x-hidden p-4 relative'>
 
             <header className='my-10' onClick={() => fetchNextPage()}>
-                <h1 className='font-bold text-3xl'>Pokedex</h1>
+                <h1 className='font-bold text-3xl'>Pokédex</h1>
             </header>
 
             { isError && !data &&

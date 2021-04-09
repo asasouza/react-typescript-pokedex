@@ -23,14 +23,22 @@ const PokemonCard = (props: IPokemonCard) => {
         })
     }
 
+    const openPokemonDetails = (): void => {
+        console.log('Pokemon clicked: ', pokemon.name);
+    }
+
     return (
-        <div className={`${pokemon.backgroundClassByType} h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} key={pokemon.name}>
-            <p className='font-semibold mb-3 text-xl'>{pokemon.name}</p>
+        <div 
+            className={`${pokemon.backgroundClassByType} cursor-pointer h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} 
+            key={pokemon.name}
+            onClick={openPokemonDetails}
+        >
+            <p className='font-semibold mb-3 relative text-xl whitespace-nowrap z-20'>{pokemon.name}</p>
             <div className='flex flex-row justify-between'>
                 <div className='flex items-start flex-col'>
                     { renderTypes(pokemon.types) }
                 </div>
-                <img alt={pokemon.name} className='-mt-5 w-24 z-10' src={pokemon.image} />
+                <img alt={pokemon.name} className='hover:scale-105 transform transition-all -mt-5 w-24 z-10' src={pokemon.image} />
             </div>
             <img alt='' className='absolute -bottom-10 opacity-50 -right-10 w-44 z-0' src={PokeballSvg} />
         </div>
