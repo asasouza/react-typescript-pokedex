@@ -14,7 +14,7 @@ import './style.css';
 const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
 
 const Home = () => {
-
+  
     const loader = useRef<HTMLDivElement | null>(null);
     const entry = useIntersectionObserver(loader, {
         root: null,
@@ -43,8 +43,8 @@ const Home = () => {
             }
 
             <Spinner
+                classAfterLoad='animate-slide-up'
                 isLoading={isLoading}
-                transitionClassName='spinner'
             />
 
             { (!isLoading && !isError && data) &&

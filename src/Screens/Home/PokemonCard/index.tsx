@@ -1,5 +1,7 @@
 // Modules
 import { Link } from 'react-router-dom';
+// Components
+import Tag from '../../../common/Components/Tag';
 // Models
 import Pokemon from '../../../models/Pokemon';
 // Resources
@@ -15,12 +17,11 @@ const PokemonCard = (props: IPokemonCard) => {
     const renderTypes = (types: string[]) => {
         return types.map(type => {
             return (
-                <span 
-                    className={`${pokemon.tagClassByType} bg-opacity-40 mb-2 mr-2 px-2 py-1 rounded-3xl shadow text-sm`}
+                <Tag
+                    backgroundColor={pokemon.tagClassByType}
                     key={type}
-                >
-                    {type}
-                </span>
+                    text={type} 
+                />
             )
         })
     }
