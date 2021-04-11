@@ -2,7 +2,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Details from './screens/Details';
+import Details from './screens/Details/index';
 import Home from './screens/Home';
 
 const queryClient = new QueryClient();
