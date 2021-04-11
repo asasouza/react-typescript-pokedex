@@ -2,6 +2,7 @@
 import React, { Fragment, useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
 // Components
+import ErrorMessage from '../../common/Components/ErrorMessage';
 import PokemonCard from './PokemonCard';
 import Spinner from '../../common/Components/Spinner';
 // Repository
@@ -40,13 +41,15 @@ const Home = () => {
             </header>
 
             {isError && !data &&
-                <h1>Deu erro</h1>
+                <ErrorMessage />
             }
 
-            <Spinner
-                classAfterLoad='animate-slide-up'
-                isLoading={isLoading}
-            />
+            { !isError &&
+                <Spinner
+                    classAfterLoad='animate-slide-up'
+                    isLoading={isLoading}
+                />
+            }
 
             {(!isLoading && !isError && data) &&
                 <div className='gap-3 grid grid-cols-2 z-10'>

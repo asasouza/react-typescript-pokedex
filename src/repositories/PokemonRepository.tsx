@@ -13,9 +13,12 @@ class PokemonRepository implements IPokemonRepository {
     readonly POKEMON_FIRST_GENERATION = 153;
 
     async getPokemon(pokemonName: string): Promise<Pokemon> {
-        const { data: pokemonData, status } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-        const { data: { evolution_chain: { url: evolution_url } } } = await axios.get(pokemonData.species.url);
-        const { data: evolutionData } = await axios.get(evolution_url);
+        const { data: pokemonData, status: pokemonStatus } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+        checkHttpStatus(pokemonStatus);
+        const { data: { evolution_chain: { url: evolution_url } }, status: speciesStatus } = await axios.get(pokemonData.species.url);
+        checkHttpStatus(speciesStatus);
+        const { data: evolutionData, status: evolutionStatus } = await axios.get(evolution_url);
+        checkHttpStatus(evolutionStatus);
 
         return new Pokemon({
             about: {
@@ -40,9 +43,7 @@ class PokemonRepository implements IPokemonRepository {
         const limitFirstGeneration = (offset + limit) > POKEMON_FIRST_GENERATION ? POKEMON_FIRST_GENERATION : (offset + limit);
         for (let i = (offset + 1); i <= limitFirstGeneration; i++) {
             const { data, status } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`);
-            if (status !== 200) {
-                throw new Error('Ocorreu um erro no fetch da api');
-            }
+            checkHttpStatus(status);
             pokemons.push(new Pokemon({
                 name: pascalCase(data.name),
                 id: data.id,
@@ -68,7 +69,8 @@ const populateEvolutions = async (evolutionData: any): Promise<Array<{ image: st
     } else if(evolves_to.length > 1) {
         for(let i = 0; i < evolves_to.length; i++) {
             const evData = evolves_to[i];
-            const { data: { sprites: { other } } } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evData.species.name}`);
+            const { data: { sprites: { other } }, status } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evData.species.name}`);
+            checkHttpStatus(status);
             pokemons.push({ image: other['official-artwork'].front_default, name: pascalCase(evData.species.name) });
         }
         return pokemons;
@@ -76,6 +78,12 @@ const populateEvolutions = async (evolutionData: any): Promise<Array<{ image: st
 
     const evolutions = await populateEvolutions({ chain: evolves_to[0] });
     return [...pokemons, ...evolutions];
+}
+
+const checkHttpStatus = (status: number): void => {
+    if (status !== 200) {
+        throw new Error();
+    }
 }
 
 export default PokemonRepository;

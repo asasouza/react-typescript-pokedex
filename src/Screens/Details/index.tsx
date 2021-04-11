@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Link, useParams } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 // Components
+import ErrorMessage from '../../common/Components/ErrorMessage';
 import Tag from '../../common/Components/Tag';
 import Spinner from '../../common/Components/Spinner';
 // Models
@@ -15,7 +16,6 @@ import { kebabCase } from '../../common/Utils/StringUtils';
 // Resources
 import PokeballSvg from '../../common/Resources/pokeball.svg';
 import Arrow from '../../common/Resources/arrow.svg';
-
 import './style.css';
 
 const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
@@ -31,7 +31,7 @@ const Details = () => {
 
     const { pokemonName } = useParams<IParams>();
 
-    const { data: pokemon, isLoading } = useQuery(['pokemon', pokemonName],
+    const { data: pokemon, isError, isLoading } = useQuery(['pokemon', pokemonName],
         () => PokemonRepository.getPokemon(pokemonName),
         {
             initialData: () => {
@@ -47,7 +47,15 @@ const Details = () => {
         }
     );
 
-    if (!pokemon || isLoading) {
+    if (!pokemon && isError) {
+        return (
+            <div className='bg-gray-100 h-screen pt-20 p-4 w-full'>
+                <ErrorMessage />
+            </div>
+        )
+    }
+
+    if (!pokemon && isLoading) {
         return (
             <div className='bg-gray-100 flex h-screen items-center justify-center w-full'>
                 <Spinner />
@@ -56,6 +64,11 @@ const Details = () => {
     }
 
     const renderCurrentTab = (tab: string) => {
+        if(isError) {
+            return (
+                <ErrorMessage />
+            )
+        }
         if (!pokemon.stats) {
             return (
                 <div className='block mt-10 mx-auto w-20 '>
