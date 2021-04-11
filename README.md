@@ -5,7 +5,7 @@
 O app foi escrito utilizando como base o projeto [Creat React App](https://github.com/facebook/create-react-app), para informações sobre como instalar o projeto recomendo a documentação linkada;
 
 ### Requisitos do Projeto
-O projeto limitou-se as funcionalidades básicas de listagem dos Pokémons e exibição dos detalhes de cada um, tendo como base de design [este mockup](https://github.com/asasouza/node-fake-twitter/blob/master/mockup.png) encontrado no Google.
+O projeto limitou-se as funcionalidades básicas de listagem dos Pokémons e exibição dos detalhes de cada um, tendo como base de design [este mockup](https://github.com/asasouza/react-typescript-pokedex/blob/master/mockup.png) encontrado no Google.
 
 Para o obtenção das informações foi utilizada a API pública [PokeAPI](https://pokeapi.co/).
 
