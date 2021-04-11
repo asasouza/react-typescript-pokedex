@@ -6,9 +6,13 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import Tag from '../../common/Components/Tag';
 // Models
 import Pokemon from '../../models/Pokemon';
+// Repository
+import RepositoryPokemon from '../../repositories/PokemonRepository';
 // Resources
 import PokeballSvg from '../../common/Resources/pokeball.svg';
 import Arrow from '../../common/Resources/arrow.svg';
+
+const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
 
 interface IParams {
     pokemonName: string,
@@ -19,34 +23,36 @@ interface ILocation {
 
 const Details = () => {
 
-    const [tab, setTab] = useState('evolution');
+    const [tab, setTab] = useState('about');
 
     const { pokemonName } = useParams<IParams>();
     const location = useLocation<ILocation>();
-    const pokemon = location.state ? location.state.pokemon : null;
+    const initialPokemon = location.state ? location.state.pokemon : null;
 
-    // const result = useQuery(['pokemon', pokemonName],
-    //     () => {
-    //         return <pokemon, queryKey: 'te'>
-    //     }, {
-    //     initialData: () => pokemon
-    // }
-    // )
+    const { data: pokemon, isLoading } = useQuery(['pokemon', pokemonName],
+        () => PokemonRepository.getPokemon(pokemonName)
+        // () => {
+        //     return <pokemon, queryKey: 'te'>
+        // }, {
+        // initialData: () => pokemon
+        // }
+    );
 
-    console.log(pokemonName, pokemon);
-
-    if (!pokemon) {
-        return <div></div>
+    if (!pokemon || isLoading) {
+        return <div>Carregando...</div>
     }
 
     const renderCurrentTab = (tab: string) => {
+        if (!pokemon.stats) {
+            return null;
+        }
         switch (tab) {
             case 'about':
-                return <AboutContainer />;
+                return <AboutContainer pokemon={pokemon} />;
             case 'stats':
-                return <StatsContainer />;
+                return <StatsContainer pokemon={pokemon} />;
             case 'evolution':
-                return <EvolutionContainer />;
+                return <EvolutionContainer pokemon={pokemon} />;
         }
     }
 
@@ -76,7 +82,7 @@ const Details = () => {
                             {renderTypes(pokemon.types)}
                         </div>
                     </div>
-                    <p className='font-semibold text-2xl'>#001</p>
+                    <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
                 </div>
 
                 <img alt={pokemon.name} className='block mx-auto relative w-2/3 -m-14 z-10' src={pokemon.image} />
@@ -129,92 +135,75 @@ const Tab = (props: ITab) => {
     );
 }
 
-const AboutContainer = () => {
+const AboutContainer = ({ pokemon }: { pokemon: Pokemon }) => {
+    const { about } = pokemon;
     return (
         <table className='text-gray-400 font-semibold'>
             <tbody>
                 <tr>
                     <td className='pb-3 pr-10'>Height</td>
-                    <td className='font-bold pb-3 text-gray-800'>20</td>
+                    <td className='font-bold pb-3 text-gray-800'>{about?.height ? ((about?.height * 10) / 100).toFixed(2) : 0}m</td>
                 </tr>
                 <tr>
                     <td className='pb-3 pr-10'>Weight</td>
-                    <td className='font-bold pb-3 text-gray-800'>20</td>
+                    <td className='font-bold pb-3 text-gray-800'>{about?.weight ? ((about?.weight * 100) / 1000).toFixed(2) : 0}kg</td>
                 </tr>
                 <tr>
                     <td className='pb-3 pr-10'>Abilities</td>
-                    <td className='font-bold pb-3 text-gray-800'>Overgrow, Clorophyll</td>
+                    <td className='font-bold pb-3 text-gray-800'>{about?.abilities}</td>
                 </tr>
                 <tr>
                     <td className='pb-3 pr-10'>Base Experience</td>
-                    <td className='font-bold pb-3 text-gray-800'>65</td>
+                    <td className='font-bold pb-3 text-gray-800'>{about?.base_experience}xp</td>
                 </tr>
             </tbody>
         </table>
     )
 }
 
-const StatsContainer = () => {
+const StatsContainer = ({ pokemon }: { pokemon: Pokemon }) => {
+    const { stats } = pokemon;
     return (
-
-        <table className='text-gray-400 font-semibold'>
+        <table className='text-gray-400 font-semibold mb-4'>
             <tbody>
-                <tr>
-                    <td className='pb-3 pr-10'>HP</td>
-                    <td className='font-bold pb-3 text-gray-800 pr-3'>20</td>
-                    <td className='relative w-full pb-2'>
-                        <div style={{ width: `${20}%` }} className='absolute border border-green-700 max-w-full z-10' />
-                        <div className='absolute border border-gray-100 w-full z-0' />
-                    </td>
-                </tr>
-                <tr>
-                    <td className='pb-3 pr-10'>Attack</td>
-                    <td className='font-bold pb-2 text-gray-800'>46</td>
-                    <td className='relative w-full pb-2'>
-                        <div style={{ width: `${46}%` }} className='absolute border border-red-700 max-w-full z-10' />
-                        <div className='absolute border border-gray-100 w-full z-0' />
-                    </td>
-                </tr>
-                <tr>
-                    <td className='pb-3 pr-10'>Defense</td>
-                    <td className='font-bold pb-2 text-gray-800'>65</td>
-                    <td className='relative w-full pb-2'>
-                        <div style={{ width: `${65}%` }} className='absolute border border-green-700 max-w-full z-10' />
-                        <div className='absolute border border-gray-100 w-full z-0' />
-                    </td>
-                </tr>
+                {stats?.map((stat, i) => {
+                    return (
+                        <tr key={stat.name}>
+                            <td className='pb-3 pr-10'>{stat.name}</td>
+                            <td className='font-bold pb-3 text-gray-800 pr-3'>{stat.value}</td>
+                            <td className='relative w-full pb-2'>
+                                <div style={{ width: `${stat.value}%` }} className={`absolute border ${i % 2 === 0 ? 'border-green-700' : 'border-red-700'} max-w-full z-10`} />
+                                <div className='absolute border border-gray-100 w-full z-0' />
+                            </td>
+                        </tr>
+                    )
+                })
+                }
             </tbody>
         </table>
     )
 }
 
-const EvolutionContainer = () => {
+const EvolutionContainer = ({ pokemon }: { pokemon: Pokemon }) => {
+    const { evolutions } = pokemon;
     return (
         <div className='gap-2 grid grid-cols-3'>
-            <Link className='text-center' to='/charmander'>
-                <img
-                    alt='pokemon-name'
-                    className='block mx-auto w-20 h-20'
-                    src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png'
-                />
-                <p className='font-bold text-gray-800'>Bulbassaur</p>
-            </Link>
-            <div className='text-center'>
-                <img
-                    alt='pokemon-name'
-                    className='block mx-auto w-20 h-20'
-                    src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png'
-                />
-                <p className='font-bold text-gray-800'>Bulbassaur</p>
-            </div>
-            <div className='text-center'>
-                <img
-                    alt='pokemon-name'
-                    className='block mx-auto w-20 h-20'
-                    src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png'
-                />
-                <p className='font-bold text-gray-800'>Bulbassaur</p>
-            </div>
+            { evolutions?.map(evolution => {
+                return (
+                    <Link 
+                        className='text-center' 
+                        key={evolution.name}
+                        to={`/${evolution.name.toLowerCase()}`}
+                    >
+                        <img
+                            alt='pokemon-name'
+                            className='block mx-auto w-20 h-20'
+                            src={evolution.image}
+                        />
+                        <p className='font-bold text-gray-800'>{evolution.name}</p>
+                    </Link>
+                )
+            })}
         </div>
     )
 }

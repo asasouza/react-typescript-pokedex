@@ -1,19 +1,31 @@
 interface IPokemon {
+    about?: { abilities: string, base_experience: number, height: number, weight: number };
+    evolutions?: Array<{ name: string, image: string }>;
+    id: number,
     image: string;
     name: string;
+    stats?: Array<{ name: string, value: number }>;
     type?: string;
     types: string[];
 }
 
 export default class Pokemon implements IPokemon {
+    about?: { abilities: string, base_experience: number,  height: number, weight: number };
+    evolutions?: Array<{ image: string, name: string }>;
+    id: number;
     image: string;
     name: string;
+    stats?: Array<{ name: string, value: number }>;
     type: string;
     types: string[];
 
-    constructor({ image, name, types }: IPokemon) {
+    constructor({ about, evolutions, id, image, name, stats, types }: IPokemon) {
+        this.about = about;
+        this.evolutions = evolutions;
+        this.id = id;
         this.image = image;
         this.name = name;
+        this.stats = stats;
         this.type = types[0];
         this.types = types;
     }

@@ -31,7 +31,7 @@ const PokemonCard = (props: IPokemonCard) => {
             className={`${pokemon.backgroundClassByType} block h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} 
             key={pokemon.name}
             to={{
-                pathname: `/${pokemon.name}`,
+                pathname: `/${pokemon.name.toLocaleLowerCase()}`,
                 state: {
                     pokemon: pokemon
                 }
