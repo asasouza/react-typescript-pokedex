@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Link, useParams } from 'react-router-dom';
-// @ts-ignore
-import { SharedElement, MotionScene, MotionScreen } from 'react-motion-layout';
+import { HashLink } from 'react-router-hash-link';
 // Components
 import Tag from '../../common/Components/Tag';
 import Spinner from '../../common/Components/Spinner';
@@ -88,57 +87,52 @@ const Details = () => {
     }
 
     return (
-        <MotionScreen>
-            <MotionScene name={pokemon.name} easing="cubic-bezier(0.22, 1, 0.36, 1)">
-                <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
-                    <div className='-mb-12 p-4 relative text-white'>
-                        <Link className='inline-block pr-2 py-2' to='/'>
-                            <img alt='Go Back' className='w-6' src={Arrow} />
-                        </Link>
-                        <div className='flex items-center justify-between mb-14'>
-                            <div>
-                                <p className=' font-semibold py-5 text-4xl'>{pokemon.name}</p>
-                                <div>
-                                    {renderTypes(pokemon.types)}
-                                </div>
-                            </div>
-                            <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
-                        </div>
-                        <SharedElement.Image
-                            alt={pokemon.name}
-                            animationKey='image'
-                            className='h-52 mx-auto relative w-52 z-10'
-                            src={pokemon.image}
-                        />
-
-                        <img alt='' className='absolute -bottom-11 -right-12 opacity-20 w-72 z-0' src={PokeballSvg} />
-                    </div>
-
-                    <div className='animate-slide-up-in bg-white flex-1 px-4 rounded-t-3xl shadow-inner'>
-                        <div className='flex items-center justify-between pt-12 pb-8'>
-                            <Tab
-                                active={tab === 'about'}
-                                onClick={() => setTab('about')}
-                                text='About'
-                            />
-                            <Tab
-                                active={tab === 'stats'}
-                                onClick={() => setTab('stats')}
-                                text='Base Stats'
-                            />
-                            <Tab
-                                active={tab === 'evolution'}
-                                onClick={() => setTab('evolution')}
-                                text='Evolution'
-                            />
-                        </div>
+        <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
+            <div className='-mb-12 p-4 relative text-white'>
+                <HashLink className='inline-block pr-2 py-2' to={`/#${kebabCase(pokemon.name)}`}>
+                    <img alt='Go Back' className='w-6' src={Arrow} />
+                </HashLink>
+                <div className='flex items-center justify-between mb-14'>
+                    <div>
+                        <p className=' font-semibold py-5 text-4xl'>{pokemon.name}</p>
                         <div>
-                            {renderCurrentTab(tab)}
+                            {renderTypes(pokemon.types)}
                         </div>
                     </div>
+                    <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
                 </div>
-            </MotionScene>
-        </MotionScreen>
+                <img
+                    alt={pokemon.name}
+                    className='h-52 mx-auto relative w-52 z-10'
+                    src={pokemon.image}
+                />
+
+                <img alt='' className='absolute -bottom-11 -right-12 opacity-20 w-72 z-0' src={PokeballSvg} />
+            </div>
+
+            <div className='animate-slide-up-in bg-white flex-1 px-4 rounded-t-3xl shadow-inner'>
+                <div className='flex items-center justify-between pt-12 pb-8'>
+                    <Tab
+                        active={tab === 'about'}
+                        onClick={() => setTab('about')}
+                        text='About'
+                    />
+                    <Tab
+                        active={tab === 'stats'}
+                        onClick={() => setTab('stats')}
+                        text='Base Stats'
+                    />
+                    <Tab
+                        active={tab === 'evolution'}
+                        onClick={() => setTab('evolution')}
+                        text='Evolution'
+                    />
+                </div>
+                <div>
+                    {renderCurrentTab(tab)}
+                </div>
+            </div>
+        </div>
     );
 }
 
