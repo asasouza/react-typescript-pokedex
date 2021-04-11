@@ -100,7 +100,7 @@ const Details = () => {
     }
 
     return (
-        <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
+        <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} cursor-default flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
             <div className='-mb-12 p-4 relative text-white'>
                 <HashLink className='inline-block pr-2 py-2' to={`/#${kebabCase(pokemon.name)}`}>
                     <img alt='Go Back' className='w-6' src={Arrow} />
@@ -116,7 +116,7 @@ const Details = () => {
                 </div>
                 <img
                     alt={pokemon.name}
-                    className='h-52 mx-auto relative w-52 z-10'
+                    className='hover:scale-110 mx-auto relative transform transition-all w-52 z-10'
                     src={pokemon.image}
                 />
 
@@ -221,11 +221,11 @@ const StatsContainer = ({ pokemon }: { pokemon: Pokemon }) => {
 const EvolutionContainer = ({ pokemon }: { pokemon: Pokemon }) => {
     const { evolutions } = pokemon;
     return (
-        <div className='gap-2 grid grid-cols-3'>
+        <div className='gap-2 grid grid-cols-3 mb-4'>
             { evolutions?.map(evolution => {
                 return (
                     <Link
-                        className='text-center'
+                        className={`${pokemon.name !== evolution.name && 'opacity-70'} text-center hover:opacity-100`}
                         key={evolution.name}
                         to={`/${evolution.name.toLowerCase()}`}
                     >

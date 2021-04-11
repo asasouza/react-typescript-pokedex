@@ -41,7 +41,7 @@ const PokemonCard = (props: IPokemonCard) => {
                 <div className='hover:scale-105 transform transition-all -translate-y-5 z-10'>
                     <img
                         alt={pokemon.name}
-                        className='h-24 w-24'
+                        className='w-24'
                         src={pokemon.image}
                     />
                 </div>
