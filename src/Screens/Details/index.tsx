@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Link, useParams } from 'react-router-dom';
+// @ts-ignore
+import { SharedElement, MotionScene, MotionScreen } from 'react-motion-layout';
 // Components
 import Tag from '../../common/Components/Tag';
 import Spinner from '../../common/Components/Spinner';
@@ -14,6 +16,8 @@ import { kebabCase } from '../../common/Utils/StringUtils';
 // Resources
 import PokeballSvg from '../../common/Resources/pokeball.svg';
 import Arrow from '../../common/Resources/arrow.svg';
+
+import './style.css';
 
 const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
 
@@ -33,9 +37,9 @@ const Details = () => {
         {
             initialData: () => {
                 const pokemonsList = queryClient.getQueryData<{ pages: Array<any> }>('pokemons')?.pages.reduce((acc, page) => {
-                   return [...acc, ...page.pokemons];
+                    return [...acc, ...page.pokemons];
                 }, []);
-                if(!pokemonsList) {
+                if (!pokemonsList) {
                     return undefined;
                 }
                 const pokemon = pokemonsList.find((pokemon: Pokemon) => kebabCase(pokemon.name) === pokemonName);
@@ -45,20 +49,20 @@ const Details = () => {
     );
 
     if (!pokemon || isLoading) {
-    return (
-        <div className='bg-gray-100 flex h-screen items-center justify-center w-full'>
-            <Spinner />
-        </div>
-    )
+        return (
+            <div className='bg-gray-100 flex h-screen items-center justify-center w-full'>
+                <Spinner />
+            </div>
+        )
     }
 
     const renderCurrentTab = (tab: string) => {
         if (!pokemon.stats) {
-        return (
-            <div className='block mt-10 mx-auto w-20 '>
-                <Spinner />
-            </div>
-        );
+            return (
+                <div className='block mt-10 mx-auto w-20 '>
+                    <Spinner />
+                </div>
+            );
         }
         switch (tab) {
             case 'about':
@@ -84,48 +88,57 @@ const Details = () => {
     }
 
     return (
-        <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
-            <div className='p-4 relative text-white'>
-                <Link className='inline-block pr-2 py-2' to='/'>
-                    <img alt='Go Back' className='w-6' src={Arrow} />
-                </Link>
-                <div className='flex items-center justify-between mb-14'>
-                    <div>
-                        <p className=' font-semibold py-5 text-4xl'>{pokemon.name}</p>
+        <MotionScreen>
+            <MotionScene name={pokemon.name} easing="cubic-bezier(0.22, 1, 0.36, 1)">
+                <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
+                    <div className='-mb-12 p-4 relative text-white'>
+                        <Link className='inline-block pr-2 py-2' to='/'>
+                            <img alt='Go Back' className='w-6' src={Arrow} />
+                        </Link>
+                        <div className='flex items-center justify-between mb-14'>
+                            <div>
+                                <p className=' font-semibold py-5 text-4xl'>{pokemon.name}</p>
+                                <div>
+                                    {renderTypes(pokemon.types)}
+                                </div>
+                            </div>
+                            <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
+                        </div>
+                        <SharedElement.Image
+                            alt={pokemon.name}
+                            animationKey='image'
+                            className='h-52 mx-auto relative w-52 z-10'
+                            src={pokemon.image}
+                        />
+
+                        <img alt='' className='absolute -bottom-11 -right-12 opacity-20 w-72 z-0' src={PokeballSvg} />
+                    </div>
+
+                    <div className='animate-slide-up-in bg-white flex-1 px-4 rounded-t-3xl shadow-inner'>
+                        <div className='flex items-center justify-between pt-12 pb-8'>
+                            <Tab
+                                active={tab === 'about'}
+                                onClick={() => setTab('about')}
+                                text='About'
+                            />
+                            <Tab
+                                active={tab === 'stats'}
+                                onClick={() => setTab('stats')}
+                                text='Base Stats'
+                            />
+                            <Tab
+                                active={tab === 'evolution'}
+                                onClick={() => setTab('evolution')}
+                                text='Evolution'
+                            />
+                        </div>
                         <div>
-                            {renderTypes(pokemon.types)}
+                            {renderCurrentTab(tab)}
                         </div>
                     </div>
-                    <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
                 </div>
-
-                <img alt={pokemon.name} className='block h-3/4 mx-auto relative w-2/3 -m-14 z-10' src={pokemon.image} />
-                <img alt='' className='absolute -bottom-11 -right-12 opacity-20 w-72 z-0' src={PokeballSvg} />
-            </div>
-
-            <div className='bg-white flex-1 px-4 rounded-t-3xl shadow-inner'>
-                <div className='flex items-center justify-between pt-12 pb-8'>
-                    <Tab
-                        active={tab === 'about'}
-                        onClick={() => setTab('about')}
-                        text='About'
-                    />
-                    <Tab
-                        active={tab === 'stats'}
-                        onClick={() => setTab('stats')}
-                        text='Base Stats'
-                    />
-                    <Tab
-                        active={tab === 'evolution'}
-                        onClick={() => setTab('evolution')}
-                        text='Evolution'
-                    />
-                </div>
-                <div>
-                    {renderCurrentTab(tab)}
-                </div>
-            </div>
-        </div>
+            </MotionScene>
+        </MotionScreen>
     );
 }
 

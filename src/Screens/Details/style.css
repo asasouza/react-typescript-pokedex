@@ -1,0 +1,16 @@
+.animate-slide-up-in {
+    transform: translateY(0);
+    animation-name: slideUpIn;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.3s;
+  }
+  
+  @keyframes slideUpIn {
+    0% {
+        transform: translateY(150px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
