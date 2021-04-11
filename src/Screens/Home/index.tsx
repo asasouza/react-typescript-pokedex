@@ -53,7 +53,7 @@ const Home = () => {
                         <Fragment key={i} >
                             {page.pokemons.map(pokemon => {
                                 return (
-                                    <div key={pokemon.name} className='animate-fade-in'>
+                                    <div key={pokemon.id} className='animate-fade-in'>
                                         <PokemonCard pokemon={pokemon} />
                                     </div>
                                 )

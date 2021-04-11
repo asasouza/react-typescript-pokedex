@@ -1,13 +1,16 @@
 // Modules
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useQuery, useQueryClient } from 'react-query';
+import { Link, useParams } from 'react-router-dom';
 // Components
 import Tag from '../../common/Components/Tag';
+import Spinner from '../../common/Components/Spinner';
 // Models
 import Pokemon from '../../models/Pokemon';
 // Repository
 import RepositoryPokemon from '../../repositories/PokemonRepository';
+// Utils
+import { kebabCase } from '../../common/Utils/StringUtils';
 // Resources
 import PokeballSvg from '../../common/Resources/pokeball.svg';
 import Arrow from '../../common/Resources/arrow.svg';
@@ -17,34 +20,45 @@ const PokemonRepository: RepositoryPokemon = new RepositoryPokemon();
 interface IParams {
     pokemonName: string,
 }
-interface ILocation {
-    pokemon?: Pokemon
-}
 
 const Details = () => {
 
     const [tab, setTab] = useState('about');
+    const queryClient = useQueryClient();
 
     const { pokemonName } = useParams<IParams>();
-    const location = useLocation<ILocation>();
-    const initialPokemon = location.state ? location.state.pokemon : null;
 
     const { data: pokemon, isLoading } = useQuery(['pokemon', pokemonName],
-        () => PokemonRepository.getPokemon(pokemonName)
-        // () => {
-        //     return <pokemon, queryKey: 'te'>
-        // }, {
-        // initialData: () => pokemon
-        // }
+        () => PokemonRepository.getPokemon(pokemonName),
+        {
+            initialData: () => {
+                const pokemonsList = queryClient.getQueryData<{ pages: Array<any> }>('pokemons')?.pages.reduce((acc, page) => {
+                   return [...acc, ...page.pokemons];
+                }, []);
+                if(!pokemonsList) {
+                    return undefined;
+                }
+                const pokemon = pokemonsList.find((pokemon: Pokemon) => kebabCase(pokemon.name) === pokemonName);
+                return pokemon;
+            }
+        }
     );
 
     if (!pokemon || isLoading) {
-        return <div>Carregando...</div>
+    return (
+        <div className='bg-gray-100 flex h-screen items-center justify-center w-full'>
+            <Spinner />
+        </div>
+    )
     }
 
     const renderCurrentTab = (tab: string) => {
         if (!pokemon.stats) {
-            return null;
+        return (
+            <div className='block mt-10 mx-auto w-20 '>
+                <Spinner />
+            </div>
+        );
         }
         switch (tab) {
             case 'about':
@@ -70,7 +84,7 @@ const Details = () => {
     }
 
     return (
-        <div className={`${pokemon.backgroundClassByType} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
+        <div className={`${pokemon.backgroundClassByType || 'bg-gray-700'} flex flex-col h-screen max-w-md mx-auto overflow-x-hidden relative`}>
             <div className='p-4 relative text-white'>
                 <Link className='inline-block pr-2 py-2' to='/'>
                     <img alt='Go Back' className='w-6' src={Arrow} />
@@ -85,7 +99,7 @@ const Details = () => {
                     <p className='font-semibold text-2xl'>{`#${pokemon.id.toLocaleString(undefined, { minimumIntegerDigits: 3 })}`}</p>
                 </div>
 
-                <img alt={pokemon.name} className='block mx-auto relative w-2/3 -m-14 z-10' src={pokemon.image} />
+                <img alt={pokemon.name} className='block h-3/4 mx-auto relative w-2/3 -m-14 z-10' src={pokemon.image} />
                 <img alt='' className='absolute -bottom-11 -right-12 opacity-20 w-72 z-0' src={PokeballSvg} />
             </div>
 
@@ -190,8 +204,8 @@ const EvolutionContainer = ({ pokemon }: { pokemon: Pokemon }) => {
         <div className='gap-2 grid grid-cols-3'>
             { evolutions?.map(evolution => {
                 return (
-                    <Link 
-                        className='text-center' 
+                    <Link
+                        className='text-center'
                         key={evolution.name}
                         to={`/${evolution.name.toLowerCase()}`}
                     >

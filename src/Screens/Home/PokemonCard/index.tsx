@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import Tag from '../../../common/Components/Tag';
 // Models
 import Pokemon from '../../../models/Pokemon';
+// Utils
+import { kebabCase } from '../../../common/Utils/StringUtils';
 // Resources
 import PokeballSvg from '../../../common/Resources/pokeball.svg';
 
@@ -25,17 +27,10 @@ const PokemonCard = (props: IPokemonCard) => {
             )
         })
     }
-
     return (
         <Link 
             className={`${pokemon.backgroundClassByType} block h-32 overflow-hidden p-3 relative rounded-3xl shadow-md text-white`} 
-            key={pokemon.name}
-            to={{
-                pathname: `/${pokemon.name.toLocaleLowerCase()}`,
-                state: {
-                    pokemon: pokemon
-                }
-            }}
+            to={`/${kebabCase(pokemon.name)}`}
         >
             <p className='font-semibold mb-3 relative text-xl whitespace-nowrap z-20'>{pokemon.name}</p>
             <div className='flex flex-row justify-between'>
